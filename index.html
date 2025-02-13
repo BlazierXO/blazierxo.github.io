@@ -3,106 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Календарь событий</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .event {
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>Мини-приложение</title>
 </head>
 <body>
-    <h1>Календарь событий</h1>
-    <form id="eventForm">
-        <label for="date">Дата:</label>
-        <input type="date" id="date" required><br><br>
-        <label for="start_time">Время начала:</label>
-        <input type="time" id="start_time" required><br><br>
-        <label for="end_time">Время окончания:</label>
-        <input type="time" id="end_time" required><br><br>
-        <label for="description">Описание:</label>
-        <input type="text" id="description" required><br><br>
-        <button type="submit">Добавить событие</button>
+    <h1>Добавить событие</h1>
+    <form id="event-form">
+        <label for="event-date">Дата:</label>
+        <input type="date" id="event-date" required><br>
+
+        <label for="event-start-time">Время начала:</label>
+        <input type="time" id="event-start-time" required><br>
+
+        <label for="event-end-time">Время окончания:</label>
+        <input type="time" id="event-end-time" required><br>
+
+        <label for="event-description">Описание:</label>
+        <input type="text" id="event-description" placeholder="Введите описание" required><br>
+
+        <button type="button" id="add-event-button">Добавить событие</button>
     </form>
 
-    <h2>Список событий</h2>
-    <div id="eventsList"></div>
-
     <script>
-        // Инициализация Telegram WebApp API
-        const tg = window.Telegram.WebApp;
+        document.getElementById('add-event-button').addEventListener('click', async () => {
+            const date = document.getElementById('event-date').value;
+            const startTime = document.getElementById('event-start-time').value;
+            const endTime = document.getElementById('event-end-time').value;
+            const description = document.getElementById('event-description').value;
 
-        // Функция для отправки данных боту
-        async function sendEventToBot(eventData) {
-            const response = await fetch('https://your-bot-api-endpoint.com/add_event', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(eventData)
-            });
-            return response.json();
-        }
+            if (!date || !startTime || !endTime || !description) {
+                alert('Пожалуйста, заполните все поля.');
+                return;
+            }
 
-        // Обработка формы добавления события
-        document.getElementById('eventForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const event = {
-                date: document.getElementById('date').value,
-                start_time: document.getElementById('start_time').value,
-                end_time: document.getElementById('end_time').value,
-                description: document.getElementById('description').value
+            const eventData = {
+                date: date,
+                start_time: startTime,
+                end_time: endTime,
+                description: description
             };
 
-            // Отправляем данные боту
-            const result = await sendEventToBot(event);
-            if (result.success) {
-                alert('Событие добавлено!');
-                loadEvents();
-            } else {
-                alert('Ошибка при добавлении события.');
+            try {
+                const botToken = '7677523148:AAF5xf_NnYlu-h2HsJ9Hql9YOViV6THUjSc'; // Замените на токен вашего бота
+                const chatId = Telegram.WebApp.initDataUnsafe.user.id; // ID пользователя
+
+                const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: `Новое событие: ${eventData.date} ${eventData.start_time}-${eventData.end_time}: ${eventData.description}`
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('Ошибка при отправке данных боту:', response.statusText);
+                } else {
+                    alert('Событие успешно добавлено!');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
             }
         });
-
-        // Загрузка списка событий
-        async function loadEvents() {
-            const response = await fetch('https://your-bot-api-endpoint.com/get_events');
-            const events = await response.json();
-
-            const eventsList = document.getElementById('eventsList');
-            eventsList.innerHTML = '';
-
-            events.forEach((event, index) => {
-                const eventDiv = document.createElement('div');
-                eventDiv.className = 'event';
-                eventDiv.innerHTML = `
-                    <strong>${event.date} ${event.start_time}-${event.end_time}</strong>: ${event.description}
-                    <button onclick="deleteEvent(${index})">Удалить</button>
-                `;
-                eventsList.appendChild(eventDiv);
-            });
-        }
-
-        // Удаление события
-        async function deleteEvent(index) {
-            const response = await fetch(`https://your-bot-api-endpoint.com/delete_event/${index}`, {
-                method: 'DELETE'
-            });
-            if (response.ok) {
-                alert('Событие удалено!');
-                loadEvents();
-            } else {
-                alert('Ошибка при удалении события.');
-            }
-        }
-
-        // Загружаем события при загрузке страницы
-        loadEvents();
     </script>
 </body>
 </html>
