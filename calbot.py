@@ -1,4 +1,5 @@
 import asyncio
+import json
 from datetime import datetime, timedelta
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler, CallbackQueryHandler
@@ -286,12 +287,12 @@ async def check_events(context: ContextTypes.DEFAULT_TYPE) -> None:
 # Обработчик сообщений от мини-приложения
 async def handle_webapp_data(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Получаем данные из Web App
-    data = update.message.web_app_data.data
+    data = update.message.text  # Данные приходят в виде строки JSON
     chat_id = update.message.chat_id
 
     # Парсим данные (ожидается JSON)
     try:
-        event_data = json.loads(data)
+        event_data = json.loads(data)  # Преобразуем строку JSON в словарь Python
         date = event_data.get("date")
         start_time = event_data.get("start_time")
         end_time = event_data.get("end_time")
@@ -327,7 +328,7 @@ def main() -> None:
     
     # Добавляем обработчики для команд
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, handle_webapp_data))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_webapp_data))
     
     conv_handler = ConversationHandler(
         entry_points=[
