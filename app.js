@@ -20,7 +20,7 @@ document.getElementById('add-event-button').addEventListener('click', async () =
     };
 
     try {
-        // Отправляем данные боту через Telegram Bot API
+        // Отправляем данные боту через Telegram Web App
         const botToken = '7677523148:AAF5xf_NnYlu-h2HsJ9Hql9YOViV6THUjSc'; // Замените на токен вашего бота
         const chatId = Telegram.WebApp.initDataUnsafe.user.id; // ID пользователя
 
@@ -31,7 +31,7 @@ document.getElementById('add-event-button').addEventListener('click', async () =
             },
             body: JSON.stringify({
                 chat_id: chatId,
-                text: `Новое событие: ${eventData.date} ${eventData.start_time}-${eventData.end_time}: ${eventData.description}`
+                text: JSON.stringify(eventData) // Преобразуем данные в JSON
             })
         });
 
