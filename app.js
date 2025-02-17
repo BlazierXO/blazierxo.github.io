@@ -19,9 +19,11 @@ document.getElementById('add-event-button').addEventListener('click', async () =
         description: description
     };
 
+    console.log("Отправляемые данные:", eventData); // Добавьте эту строку
+
     try {
         // Отправляем данные боту через Telegram Bot API
-        const botToken = 'YOUR_BOT_TOKEN'; // Замените на токен вашего бота
+        const botToken = '7677523148:AAF5xf_NnYlu-h2HsJ9Hql9YOViV6THUjSc'; // Замените на токен вашего бота
         const chatId = Telegram.WebApp.initDataUnsafe.user.id; // ID пользователя
 
         const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
@@ -34,6 +36,8 @@ document.getElementById('add-event-button').addEventListener('click', async () =
                 text: JSON.stringify(eventData) // Преобразуем данные в JSON
             })
         });
+
+        console.log("Ответ сервера:", await response.json()); // Добавьте эту строку
 
         if (!response.ok) {
             console.error('Ошибка при отправке данных боту:', response.statusText);
