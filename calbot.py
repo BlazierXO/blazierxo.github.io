@@ -345,7 +345,7 @@ def main() -> None:
         fallbacks=[CallbackQueryHandler(button_handler, pattern="^cancel$|^back$")],
         per_chat=True,       # Отслеживать состояние для каждого чата
         per_user=False,      # Не отслеживать состояние для каждого пользователя
-        per_message=False    # Не отслеживать состояние для каждого сообщения
+        per_message=False    # Не отслеживать состояние для каждого сообщения 
     )
     
     application.add_handler(conv_handler)
