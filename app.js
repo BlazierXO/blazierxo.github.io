@@ -21,7 +21,7 @@ document.getElementById('add-event-button').addEventListener('click', async () =
 
     try {
         // Отправляем данные боту через Telegram Bot API
-        const botToken = '7677523148:AAF5xf_NnYlu-h2HsJ9Hql9YOViV6THUjSc'; // Замените на токен вашего бота
+        const botToken = 'YOUR_BOT_TOKEN'; // Замените на токен вашего бота
         const chatId = Telegram.WebApp.initDataUnsafe.user.id; // ID пользователя
 
         const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {

@@ -61,7 +61,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         reply_markup = InlineKeyboardMarkup([
             [InlineKeyboardButton("Добавить событие", callback_data="add_event")],
             [InlineKeyboardButton("Просмотреть события", callback_data="view_events")],
-            [InlineKeyboardButton("Открыть мини-приложение", web_app=WebAppInfo(url="https://blazierxo.github.io"))]
+            [InlineKeyboardButton("Открыть мини-приложение", web_app=WebAppInfo(url="https://github.com/blazierxo.github.io"))]
         ])
         await update.message.reply_text(
             "Привет! Я ваш календарь-бот. Выберите действие:",
