@@ -1,4 +1,10 @@
 document.getElementById('add-event-button').addEventListener('click', async () => {
+    // Проверяем, что объект Telegram.WebApp доступен
+    if (!window.Telegram || !Telegram.WebApp) {
+        alert('Это приложение работает только внутри Telegram.');
+        return;
+    }
+
     // Получаем данные из полей ввода
     const date = document.getElementById('event-date').value;
     const startTime = document.getElementById('event-start-time').value;
@@ -19,8 +25,6 @@ document.getElementById('add-event-button').addEventListener('click', async () =
         description: description
     };
 
-    console.log("Отправляемые данные:", eventData); // Добавьте эту строку
-
     try {
         // Отправляем данные боту через Telegram Bot API
         const botToken = '7677523148:AAF5xf_NnYlu-h2HsJ9Hql9YOViV6THUjSc'; // Замените на токен вашего бота
@@ -36,8 +40,6 @@ document.getElementById('add-event-button').addEventListener('click', async () =
                 text: JSON.stringify(eventData) // Преобразуем данные в JSON
             })
         });
-
-        console.log("Ответ сервера:", await response.json()); // Добавьте эту строку
 
         if (!response.ok) {
             console.error('Ошибка при отправке данных боту:', response.statusText);
